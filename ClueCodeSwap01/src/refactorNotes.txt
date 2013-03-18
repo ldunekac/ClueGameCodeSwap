@@ -1,0 +1,93 @@
+
+
+
+Example of not using DRY:
+
+In this example, it was found beneficial to create a function
+to handle initialization of all variables within a class.
+	public Board() {
+		rooms = new HashMap<Character, String>();
+		cells = new ArrayList<BoardCell>();
+		adjHM = new HashMap<Integer, LinkedList<Integer>>();
+		this.layoutFile = this.DEFAULT_LAYOUT_FILE;
+		this.legendFile = this.DEFAULT_LEGEND_FILE;
+		//doorCells = new ArrayList<Integer>();
+		targets = new ArrayList<Integer>();
+		visitedHM = new HashMap<Integer, Boolean>();
+		
+	}
+
+	public Board(String layoutFile, String legendFile) {
+		rooms = new HashMap<Character, String>();
+		cells = new ArrayList<BoardCell>();
+		adjHM = new HashMap<Integer, LinkedList<Integer>>();
+		this.layoutFile = layoutFile;
+		this.legendFile = legendFile;
+		//doorCells = new ArrayList<Integer>();
+		targets = new ArrayList<Integer>();
+		visitedHM = new HashMap<Integer, Boolean>();
+	}
+
+refactored to:
+	public Board() {
+		__init__(DEFAULT_LAYOUT_FILE, DEFAULT_LEGEND_FILE);
+	}
+
+	public Board(String layoutFile, String legendFile) {
+		__init__(layoutFile, legendFile);
+	}
+	
+	private void __init__(String layout, String legendFile)
+	{
+		rooms = new HashMap<Character, String>();
+		cells = new ArrayList<BoardCell>();
+		adjHM = new HashMap<Integer, LinkedList<Integer>>();
+		this.layoutFile = layout;
+		this.legendFile = legendFile;
+		//doorCells = new ArrayList<Integer>();
+		targets = new ArrayList<Integer>();
+		visitedHM = new HashMap<Integer, Boolean>();
+	}
+
+Example of style, prior to factor:
+Stylistically speaking, a switch statement using enums is easier
+to read than a nested if statement.
+	public RoomCell.DoorDirection parseDoorDirection(String c) {
+		if (c.equalsIgnoreCase("N"); 
+			return RoomCell.DoorDirection.NONE;
+		if (c.equalsIgnoreCase("U")) 
+			return RoomCell.DoorDirection.UP;
+		if (c.equalsIgnoreCase("D")) 
+			return RoomCell.DoorDirection.DOWN;
+		if (c.equalsIgnoreCase("L")) 
+			return RoomCell.DoorDirection.LEFT;
+		if (c.equalsIgnoreCase("R")) 
+			return RoomCell.DoorDirection.RIGHT;
+		throw new BadConfigFormatException("Door Direction Invalid");
+	}
+
+refactored
+	public RoomCell.DoorDirection parseDoorDirection(char c) {
+		switch (c) {
+		case 'N':	return RoomCell.DoorDirection.NONE;
+		case 'U': 	return RoomCell.DoorDirection.UP;
+		case 'D': 	return RoomCell.DoorDirection.DOWN;
+		case 'L': 	return RoomCell.DoorDirection.LEFT;
+		case 'R': 	return RoomCell.DoorDirection.RIGHT;
+		default: 	throw new BadConfigFormatException("Door Direction Invalid");
+		}
+	}
+
+Flexible Interfacing:
+It is better practice when using interfaces to declare the parent
+interface in the class and then instantiating the children.
+
+prior refactor
+	private HashMap<Character, String> rooms;	
+	private HashMap<Integer, LinkedList<Integer>> adjHM;
+	private HashMap<Integer, Boolean> visitedHM;
+
+refactored
+	private Map<Character, String> rooms;	
+	private Map<Integer, LinkedList<Integer>> adjHM;
+	private Map<Integer, Boolean> visitedHM;

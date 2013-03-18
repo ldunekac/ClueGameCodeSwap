@@ -14,10 +14,10 @@ import java.util.Set;
 
 public class Board {
 	private ArrayList<BoardCell> cells;
-	private HashMap<Character, String> rooms;	
-	private HashMap<Integer, LinkedList<Integer>> adjHM;
+	private Map<Character, String> rooms;	
+	private Map<Integer, LinkedList<Integer>> adjHM;
 	private ArrayList<Integer> targets;
-	private HashMap<Integer, Boolean> visitedHM;
+	private Map<Integer, Boolean> visitedHM;
 	
 	private int numRows, numColumns;
 	private final String DEFAULT_LAYOUT_FILE = "ClueLayout.csv";
@@ -27,22 +27,19 @@ public class Board {
 	private int startingCell;
 	
 	public Board() {
-		rooms = new HashMap<Character, String>();
-		cells = new ArrayList<BoardCell>();
-		adjHM = new HashMap<Integer, LinkedList<Integer>>();
-		this.layoutFile = this.DEFAULT_LAYOUT_FILE;
-		this.legendFile = this.DEFAULT_LEGEND_FILE;
-		//doorCells = new ArrayList<Integer>();
-		targets = new ArrayList<Integer>();
-		visitedHM = new HashMap<Integer, Boolean>();
-		
+		__init__(DEFAULT_LAYOUT_FILE, DEFAULT_LEGEND_FILE);
 	}
 
 	public Board(String layoutFile, String legendFile) {
+		__init__(layoutFile, legendFile);
+	}
+	
+	private void __init__(String layout, String legendFile)
+	{
 		rooms = new HashMap<Character, String>();
 		cells = new ArrayList<BoardCell>();
 		adjHM = new HashMap<Integer, LinkedList<Integer>>();
-		this.layoutFile = layoutFile;
+		this.layoutFile = layout;
 		this.legendFile = legendFile;
 		//doorCells = new ArrayList<Integer>();
 		targets = new ArrayList<Integer>();
@@ -152,8 +149,8 @@ public class Board {
 						throw new BadConfigFormatException("Room is not in legend file");
 				} else if (i.length() == 2) {
 					if (rooms.containsKey(i.charAt(0))) {
-							cells.add(new RoomCell(row, column, i.charAt(0), parseDoorDirection(i.substring(1, 2))));
-							//doorCells.add(calcIndex(row, column));
+							cells.add(new RoomCell(row, column, i.charAt(0), parseDoorDirection(i.substring(1, 2).charAt(0))));
+							//doorCells.add(calcIndex(row, column)
 					} else {
 						throw new BadConfigFormatException("Room is not in legend file");
 					}
@@ -169,18 +166,15 @@ public class Board {
 		//System.out.println("Board size = " + numRows+","+numColumns);
 	}
 	
-	public RoomCell.DoorDirection parseDoorDirection(String c) {
-		if (c.equalsIgnoreCase("N"))
-			return RoomCell.DoorDirection.NONE;
-		if (c.equalsIgnoreCase("U")) 
-			return RoomCell.DoorDirection.UP;
-		if (c.equalsIgnoreCase("D")) 
-			return RoomCell.DoorDirection.DOWN;
-		if (c.equalsIgnoreCase("L")) 
-			return RoomCell.DoorDirection.LEFT;
-		if (c.equalsIgnoreCase("R")) 
-			return RoomCell.DoorDirection.RIGHT;
-		throw new BadConfigFormatException("Door Direction Invalid");
+	public RoomCell.DoorDirection parseDoorDirection(char c) {
+		switch (c) {
+		case 'N':	return RoomCell.DoorDirection.NONE;
+		case 'U': 	return RoomCell.DoorDirection.UP;
+		case 'D': 	return RoomCell.DoorDirection.DOWN;
+		case 'L': 	return RoomCell.DoorDirection.LEFT;
+		case 'R': 	return RoomCell.DoorDirection.RIGHT;
+		default: 	throw new BadConfigFormatException("Door Direction Invalid");
+		}
 	}
 	
 	public void loadConfigFiles() {
@@ -228,18 +222,27 @@ public class Board {
 						continue;
 					}										
 				}
+
 				
 				// Walkways & Doors
-				if (isSquareValid(r-1, c) && (getCellAt(r-1,c).isWalkway() || getRoomCellAt(r-1,c).getDoorDirection() == RoomCell.DoorDirection.DOWN)) {
+				if (isSquareValid(r-1, c) && ((getCellAt(r-1,c).isWalkway() 
+						|| getRoomCellAt(r-1,c).getDoorDirection() == RoomCell.DoorDirection.DOWN))) 
+				{				
 					l.add(calcIndex(r-1,c));
 				}
-				if (isSquareValid(r, c-1) && (getCellAt(r,c-1).isWalkway() || getRoomCellAt(r,c-1).getDoorDirection() == RoomCell.DoorDirection.RIGHT)) {
+				if (isSquareValid(r, c-1) && ((getCellAt(r,c-1).isWalkway() 
+						|| getRoomCellAt(r,c-1).getDoorDirection() == RoomCell.DoorDirection.RIGHT))) 
+				{					
 					l.add(calcIndex(r,c-1));
 				}
-				if (isSquareValid(r+1, c) && (getCellAt(r+1,c).isWalkway() || getRoomCellAt(r+1,c).getDoorDirection() == RoomCell.DoorDirection.UP)) {
+				if (isSquareValid(r+1, c) && ((getCellAt(r+1,c).isWalkway() 
+						|| getRoomCellAt(r+1,c).getDoorDirection() == RoomCell.DoorDirection.UP))) 
+				{					
 					l.add(calcIndex(r+1,c));
 				}
-				if (isSquareValid(r, c+1) && (getCellAt(r,c+1).isWalkway() || getRoomCellAt(r,c+1).getDoorDirection() == RoomCell.DoorDirection.LEFT)) {
+				if (isSquareValid(r, c+1) && ((getCellAt(r,c+1).isWalkway() 
+						|| getRoomCellAt(r,c+1).getDoorDirection() == RoomCell.DoorDirection.LEFT))) 
+				{					
 					l.add(calcIndex(r,c+1));
 				}
 				if (l.size() > 0) {					
@@ -247,6 +250,7 @@ public class Board {
 					//System.out.println(onSquare + " " + l);
 				}
 				onSquare++;
+				
 			}			
 		}
 	}
