@@ -5,12 +5,16 @@ import java.util.ArrayList;
 
 public abstract class Player {
 	protected String name;
+	protected String color;
 	protected ArrayList<Card> hand;
+	protected Point point;
 
 	public Player(){}
-	public Player(String name)
+	public Player(String name, String color, int locx, int locy)
 	{
 		this.name = name;
+		this.color = color;
+		point = new Point(locx, locy);
 	}
 	
 	public Card disproveSuggestion(String person, String room, String weapon)

@@ -6,6 +6,10 @@ public class ComputerPlayer extends Player {
 	private char lastRoomVisited;
 	
 	public ComputerPlayer(){}
+	public ComputerPlayer(String name, String color, int locx, int locy)
+	{
+		super(name, color, locx, locy);
+	}
 	
 	public BoardCell pickLocation(Set<BoardCell> targets)
 	{

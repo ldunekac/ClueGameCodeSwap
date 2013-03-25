@@ -5,12 +5,12 @@ public class HumanPlayer extends Player {
 
 	public HumanPlayer()
 	{
-		super(DEFAULT_NAME);
+		super(DEFAULT_NAME, "None", 0,0);
 	}
 	
-	public HumanPlayer(String name)
+	public HumanPlayer(String name, String color, int locx, int locy)
 	{
-		super(name);
+		super(name, color, locx, locy);
 	}
 
 	@Override

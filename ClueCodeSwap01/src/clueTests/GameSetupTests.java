@@ -29,11 +29,14 @@ public class GameSetupTests {
 	public void LoadPeople()
 	{
 		ArrayList<Player> players = game.getPlayers();
+		System.out.println(players.size());
 		Set<Player> playerSet = new HashSet<Player>();
+		System.out.println("hello");
 		for (Player p : players)
 		{
 			playerSet.add(p);
 		}
+		System.out.println(playerSet.size());
 		Assert.assertEquals(players.size(), playerSet.size());
 
 		int check = 0;
@@ -52,14 +55,14 @@ public class GameSetupTests {
 			{
 				check++;
 				Point point = new Point(0,20);
-				Assert.assertEquals("Pink", p.getColor());
+				Assert.assertEquals("Green", p.getColor());
 				Assert.assertTrue(p.isComputer());
 				Assert.assertTrue(point.equals(p.getLocation()));
 			}else if (p.getName().equals("The Duck Master"))
 			{
 				check++;
-				Point point = new Point(0,8);
-				Assert.assertEquals("Green", p.getColor());
+				Point point = new Point(19,10);
+				Assert.assertEquals("Orange", p.getColor());
 				Assert.assertTrue(p.isComputer());
 				Assert.assertTrue(point.equals(p.getLocation()));
 			}

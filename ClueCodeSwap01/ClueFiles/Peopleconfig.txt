@@ -1,0 +1,6 @@
+Mr. Cuddles, Blue, 0, 2
+The Hacker, Green, 0, 20
+The Duck Master, Orange, 19, 10
+Glados, Black, 19, 0
+Mr. Penguin, white, 5, 25
+Space chancellor Willison, Red, 14, 25

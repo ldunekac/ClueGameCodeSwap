@@ -1,6 +1,7 @@
 package clueGame;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ClueGame {
 	private ArrayList<Player> players;
@@ -11,7 +12,7 @@ public class ClueGame {
 	
 	public ClueGame()
 	{
-		
+		loadConfigFiles();
 	}
 	
 	// Stack the Deck constructor Not to be used in Game
@@ -20,11 +21,31 @@ public class ClueGame {
 
 		
 	}
-
+	// Loading Files
+	 
 	public void loadConfigFiles()
 	{
-		
+		loadPeople();
 	}
+	
+	private void loadPeople()
+	{
+		Scanner scan = new Scanner("Peopleconfig.txt");
+		String line;
+		String[] split;
+		boolean first = false;
+		while(scan.hasNext())
+		{
+			line = scan.nextLine().replace(" ", "");
+			split = line.split(",");
+			if (first)
+				players.add(new HumanPlayer(split[0], split[1], Integer.parseInt(split[2]), Integer.parseInt(split[3])));
+			else
+				players.add(new ComputerPlayer(split[0], split[1], Integer.parseInt(split[2]), Integer.parseInt(split[3])));
+		}
+	}
+	
+	// Action Functions
 	
 	public void selectAnswer()
 	{
@@ -78,4 +99,5 @@ public class ClueGame {
 		// TODO Auto-generated method stub
 		
 	}
+
 }
