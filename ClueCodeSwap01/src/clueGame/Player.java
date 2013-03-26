@@ -15,33 +15,37 @@ public abstract class Player {
 		this.name = name;
 		this.color = color;
 		point = new Point(locx, locy);
+		hand = new ArrayList<Card>();
 	}
 	
 	public Card disproveSuggestion(String person, String room, String weapon)
 	{
-		return new Card();
+		return new Card("None", CardType.PERSON);
 	}
 	// FOR TESTING ONLY
 	abstract public boolean isComputer();
 	abstract public boolean isHuman();
 
 	
+	public void addCardToHand(Card card) {
+		hand.add(card);
+	}	
 	
 	public String getName() {
 		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 	public String getColor() {
 		// TODO Auto-generated method stub
-		return null;
+		return color;
 	}
 	public Point getLocation() {
 		// TODO Auto-generated method stub
-		return null;
+		return point;
 	}
 	public ArrayList<Card> getHand() {
 		// TODO Auto-generated method stub
-		return null;
+		return hand;
 	}
 	public boolean containsCard(Card person) {
 		// TODO Auto-generated method stub
@@ -54,6 +58,6 @@ public abstract class Player {
 	public boolean makeAccusation(String string, String string2, String string3) {
 		// TODO Auto-generated method stub
 		return false;
-	}	
+	}
 	
 }

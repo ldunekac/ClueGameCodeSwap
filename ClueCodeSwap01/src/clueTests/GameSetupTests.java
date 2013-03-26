@@ -22,6 +22,8 @@ public class GameSetupTests {
 	public void setup()
 	{
 		game = new ClueGame();
+		game.loadConfigFiles();
+		game.initGame();
 	}
 	
 	@Test
@@ -29,14 +31,11 @@ public class GameSetupTests {
 	public void LoadPeople()
 	{
 		ArrayList<Player> players = game.getPlayers();
-		System.out.println(players.size());
 		Set<Player> playerSet = new HashSet<Player>();
-		System.out.println("hello");
 		for (Player p : players)
 		{
 			playerSet.add(p);
 		}
-		System.out.println(playerSet.size());
 		Assert.assertEquals(players.size(), playerSet.size());
 
 		int check = 0;
@@ -83,7 +82,7 @@ public class GameSetupTests {
 		{
 			cardSet.add(c);
 		}
-		Assert.assertEquals(21, cardSet.size());
+		Assert.assertEquals(22, cardSet.size());
 		// Make sure cards are right type
 		int check = 0;
 		for(Card c : cards)
@@ -118,8 +117,8 @@ public class GameSetupTests {
 			{
 				cardHands.add(c);
 			}
-			Assert.assertEquals(3, p.getHand().size());
+			Assert.assertTrue(p.getHand().size() - 3 <= 1 );
 		}
-		Assert.assertEquals(18, cardHands.size());
+		Assert.assertEquals(19, cardHands.size());
 	}
 }

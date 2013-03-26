@@ -4,14 +4,19 @@ public class Card {
 	public String name;
 	public CardType cardType;
 	
+	public Card(String name, CardType type)
+	{
+		this.name = name;
+		cardType = type;
+	}
 	public String getName() {
 		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 	public CardType getType() {
 		// TODO Auto-generated method stub
-		return null;
+		return cardType;
 	}
 
 	// TESTING PURPOSES
