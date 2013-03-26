@@ -22,4 +22,12 @@ public class HumanPlayer extends Player {
 	public boolean isHuman() {
 		return true;
 	}
+	@Override
+	public Solution makeAccusation(String person, String weapon, String room) {
+		Solution soluiton = new Solution();
+		 soluiton.person =  new Card(person);
+		 soluiton.weapon =  new Card(weapon);
+		 soluiton.room =  new Card(room);
+		return soluiton;
+	}
 }

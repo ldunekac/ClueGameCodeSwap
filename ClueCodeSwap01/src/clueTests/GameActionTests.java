@@ -25,6 +25,8 @@ public class GameActionTests {
 	public void setup()
 	{
 		game = new ClueGame();
+		game.loadConfigFiles();
+		game.initGame();
 	}
 	
 	@Test
@@ -37,9 +39,9 @@ public class GameActionTests {
 		
 		for (Player p : players)
 		{
-			Assert.assertFalse(p.containsCard(solution.person));
-			Assert.assertFalse(p.containsCard(solution.weapon));
-			Assert.assertFalse(p.containsCard(solution.room));
+			Assert.assertFalse(p.containsCard(solution.person.getName()));
+			Assert.assertFalse(p.containsCard(solution.weapon.getName()));
+			Assert.assertFalse(p.containsCard(solution.room.getName()));
 		}
 		Assert.assertTrue(game.getDeck().contains(solution.person));
 		Assert.assertTrue(game.getDeck().contains(solution.weapon));
@@ -49,19 +51,18 @@ public class GameActionTests {
 		// Player accusation correct
 		game.setSolution("The Hacker", "SQL Injection", "Ball Room");
 		Player p = new HumanPlayer();
-		correct = p.makeAccusation("The Hacker", "SQL Injection", "Ball Room");
+		correct = game.checkAccusation(p.makeAccusation("The Hacker", "SQL Injection", "Ball Room"));
 		Assert.assertTrue(correct);
-		
 		// wrong person
-		correct = p.makeAccusation("Mr. Cuddles", "SQL Injection", "Ball Room");
+		correct = game.checkAccusation(p.makeAccusation("Mr. Cuddles", "SQL Injection", "Ball Room"));
 		Assert.assertFalse(correct);
 		
 		// wrong weapon
-		correct = p.makeAccusation("The Hacker", "Shrodinger's Cat", "Ball Room");
+		correct = game.checkAccusation(p.makeAccusation("The Hacker", "Shrodinger's Cat", "Ball Room"));
 		Assert.assertFalse(correct);
 		
 		// wrong room
-		correct = p.makeAccusation("The Hacker", "SQL Injection", "Kitchen");
+		correct = game.checkAccusation(p.makeAccusation("The Hacker", "SQL Injection", "Kitchen"));
 		Assert.assertFalse(correct);
 		
 	}
@@ -71,81 +72,72 @@ public class GameActionTests {
 	{
 		// Will go In room
 		ComputerPlayer player = new ComputerPlayer();
-		player.setLastVisited("Ball Room");
+		player.setLastVisited('Z');
 		Board board = game.getBoard();
-		board.calcTargets(8, 0, 2);
-		int loc_10_0 = 0;
-		int loc_9_1 = 0;
-		int loc_8_2 = 0;
-		int loc_7_1 = 0;
+		board.calcTargets(4, 5, 2);
+		int loc_4_3 = 0;
 		
 		int total = 120;
 		for(int i = 0; i < total; i++)
 		{
 			BoardCell selected = player.pickLocation(board.getTargets());
-			if (selected == board.getCellAt(board.calcIndex(10, 0)))
-				loc_10_0++;
-			else if (selected == board.getCellAt(board.calcIndex(9, 1)))
-				loc_9_1++;
-			else if (selected == board.getCellAt(board.calcIndex(8, 2)))
-				loc_8_2++;
-			else if (selected == board.getCellAt(board.calcIndex(7, 1)))
-				loc_7_1++;
+			if (selected == board.getCellAt(board.calcIndex(4, 3)))
+				loc_4_3++;
 		}
 		
-		Assert.assertTrue(loc_7_1 == total);
+		Assert.assertTrue(loc_4_3 == total);
 		
 		// Random one
 		player = new ComputerPlayer();
 		board = game.getBoard();
-		board.calcTargets(2, 0, 1);
-		int loc_3_0 = 0;
-		int loc_2_1 = 0;
+		board.calcTargets(0, 4, 2);
+		int loc_0_6 = 0;
+		int loc_1_5 = 0;
 
 		total = 120;
 		for(int i = 0; i < total; i++)
 		{
 			BoardCell selected = player.pickLocation(board.getTargets());
-			if (selected == board.getCellAt(board.calcIndex(3, 0)))
-				loc_3_0++;
-			else if (selected == board.getCellAt(board.calcIndex(2, 1)))
-				loc_2_1++;
+			if (selected == board.getCellAt(board.calcIndex(0, 6)))
+				loc_0_6++;
+			else if (selected == board.getCellAt(board.calcIndex(1, 5)))
+				loc_1_5++;
+			else 
+				System.out.println(selected.getRow() + " " +selected.getColumn());
 		}
-		Assert.assertEquals(total, loc_3_0+loc_2_1);
+		int temp = loc_0_6+loc_1_5;
+		Assert.assertEquals(total, loc_0_6+loc_1_5);
 		
-		Assert.assertTrue(loc_3_0 > 30);
-		Assert.assertTrue(loc_2_1 > 30);
+		Assert.assertTrue(loc_0_6 > 30);
+		Assert.assertTrue(loc_1_5 > 30);
 		
 		// Equal chance to go in room
 		player = new ComputerPlayer();
-		player.setLastVisited("Hall");
+		player.setLastVisited('C');
 		board = game.getBoard();
-		board.calcTargets(8, 0, 2);
-		 loc_10_0 = 0;
-		 loc_9_1 = 0;
-		 loc_8_2 = 0;
-		 loc_7_1 = 0;
+		board.calcTargets(4,4,1);
+		
+		int loc_4_5 = 0;
+		loc_4_3 = 0;
+		int loc_5_4 = 0;
 		
 		total = 120;
 		for(int i = 0; i < total; i++)
 		{
 			BoardCell selected = player.pickLocation(board.getTargets());
-			if (selected == board.getCellAt(board.calcIndex(10, 0)))
-				loc_10_0++;
-			else if (selected == board.getCellAt(board.calcIndex(9, 1)))
-				loc_9_1++;
-			else if (selected == board.getCellAt(board.calcIndex(8, 2)))
-				loc_8_2++;
-			else if (selected == board.getCellAt(board.calcIndex(7, 1)))
-				loc_7_1++;
+			if (selected == board.getCellAt(board.calcIndex(4, 5)))
+				loc_4_5++;
+			else if (selected == board.getCellAt(board.calcIndex(4, 3)))
+				loc_4_3++;
+			else if (selected == board.getCellAt(board.calcIndex(5, 4)))
+				loc_5_4++;
 		}
 		
-		Assert.assertEquals(total, loc_10_0+loc_9_1+loc_8_2+loc_7_1);
+		Assert.assertEquals(total, loc_4_5+loc_4_3+loc_5_4);
 		
-		Assert.assertTrue(loc_10_0 > 15);
-		Assert.assertTrue(loc_9_1 > 15);
-		Assert.assertTrue(loc_8_2 > 15);
-		Assert.assertTrue(loc_7_1 > 15);
+		Assert.assertTrue(loc_4_5 > 15);
+		Assert.assertTrue(loc_4_3 > 15);
+		Assert.assertTrue(loc_5_4 > 15);
 
 		
 		
@@ -154,9 +146,10 @@ public class GameActionTests {
 	@Test
 	public void makeSuggestion()
 	{
-		game = null;
-		game = new ClueGame(true); // creates a stacked deck
-		
+	//	game = null;
+	//	game = new ClueGame(true); // creates a stacked deck
+	//	game.loadConfigFiles();
+	//	game.initGame();
 		Player human = game.MrCuddles; // ball room SQL injection own
 		
 		// One Player one match
@@ -179,11 +172,11 @@ public class GameActionTests {
 			
 		// No matches
 		ans = game.handleSuggestion("Mr. Cuddles", "SQL Injection", "Ball Room", human);
-		Assert.assertTrue(ans == null);
+		Assert.assertTrue(ans == "");
 			
 		Player computer = game.theHacker;
 		
-		ArrayList<String> suggestion = computer.makeSuggestion();
+		ArrayList<String> suggestion = computer.makeSuggestion(game.getDeck());
 		Assert.assertTrue(suggestion.size() == 3);
 		int suggestionCount = 0;
 		for(String s : suggestion)
@@ -197,40 +190,32 @@ public class GameActionTests {
 		}
 		Assert.assertEquals(3, suggestionCount);
 		
-		int handCount = 0;
-		ArrayList<Card> hackerHand = computer.getHand();
-		for(Card c : hackerHand)
-		{
-			if(c.isA(suggestion.get(0)) || c.isA(suggestion.get(1)) || c.isA(suggestion.get(2)))
-			{
-				handCount++;
-			}
-		}
-		Assert.assertTrue(handCount <= 1);
 	}
 	
 	@Test
 	public void computerSuggestion()
 	{
-		game.stackDeck(1);
 		
 		Player p = new ComputerPlayer();
-		
-		ArrayList<String> ans = p.makeSuggestion();
+		p.seenAlmostEverything(1, game.getDeck());
+		ArrayList<String> ans = p.makeSuggestion(game.getDeck());
 		// Only one suggestion available
-		Assert.assertTrue(ans.get(0).equals("The Hacker") && ans.get(1).equals("SQL Injection") && ans.get(2).equals("Hall") );
 		
+		Assert.assertTrue(ans.contains("The Hacker") && ans.contains("SQL Injection") && ans.contains("Hall") );
+		
+		game = new ClueGame();
+		game.loadConfigFiles();
+		game.initGame();
 		// multiple suggestion available
-		game.stackDeck(2);
 		int choiceA = 0;
 		int choiceB = 0;
-		
+		p.seenAlmostEverything(2, game.getDeck());
 		for (int i = 0; i < 50; i++)
 		{
-			ans = p.makeSuggestion();
-			if(ans.get(0).equals("The Hacker") && ans.get(1).equals("SQL Injection") && ans.get(2).equals("Hall"))
+			ans = p.makeSuggestion(game.getDeck());
+			if(ans.contains("The Hacker") && ans.contains("SQL Injection") && ans.contains("Hall"))
 				choiceA++;
-			else if (ans.get(0).equals("Mr. Cuddles") && ans.get(1).equals("SQL Injection") && ans.get(2).equals("Hall"))
+			else if (ans.contains("Mr. Cuddles") && ans.contains("SQL Injection") && ans.contains("Hall"))
 				choiceB++;
 		}
 		Assert.assertTrue(choiceA > 0);

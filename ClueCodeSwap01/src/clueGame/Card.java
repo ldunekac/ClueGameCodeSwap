@@ -9,6 +9,12 @@ public class Card {
 		this.name = name;
 		cardType = type;
 	}
+	
+	public Card(String name)
+	{
+		this.name = name;
+		cardType = null;
+	}
 	public String getName() {
 		// TODO Auto-generated method stub
 		return name;

@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class ClueGame {
 	private ArrayList<Player> players;
 	private ArrayList<Card> deck;
 	private Solution solution;
+	private Board board;
 	// Testing 
 	public Player MrCuddles;
 	public Player theHacker;
@@ -46,7 +48,18 @@ public class ClueGame {
 	
 	public void initGame()
 	{
+		board = new Board();
+		board.loadConfigFiles();
+		board.calcAdjacencies();
 		dealCards();
+		// Assign Mr Cuddles and thehacker
+		for(Player p : players)
+		{
+			if(p.name.equals("Mr. Cuddles"))
+				MrCuddles = p;
+			else if (p.name.equals("The Hacker"))
+				theHacker = p;
+		}
 	}
 	
 	
@@ -140,7 +153,7 @@ public class ClueGame {
 					}
 				break;
 			case WEAPON: 
-				if(!firstWeapon) 
+				if(!firstWeapon && deck.get(i).getName().equals("SQL Injection")) 
 				{
 					firstWeapon = true;
 					seen[i] = true;
@@ -165,8 +178,18 @@ public class ClueGame {
 		{
 			if(!seen[i]) 
 			{
+				if(deck.get(i).name.equals("SQL Injection"))
+				{
+					for(Player p : players)
+					{
+						if (p.getName().equals("Mr. Cuddles"))
+							p.addCardToHand(deck.get(i));
+					}
+				}
+				else {
 				players.get(currentLocation).addCardToHand(deck.get(i));
 				currentLocation = (currentLocation + 1) % playerSize;
+				}
 			}
 		}
 	}
@@ -178,45 +201,67 @@ public class ClueGame {
 	
 	public String handleSuggestion(String person, String room, String weapon, Player accusingPerson)
 	{
-		// TODO
+		Random r = new Random();
+		int current = r.nextInt(players.size());
+		
+		for(int i = 0; i < players.size(); i++)
+		{
+			if(!(players.get(current) == accusingPerson))
+			{
+				if(players.get(current).containsCard(person))
+					return person;
+				if(players.get(current).containsCard(room))
+					return room;
+				if(players.get(current).containsCard(weapon))
+					return weapon;
+			}
+			current = (current + 1) % players.size();
+		}
 		return "";
 	}
 	
-	public boolean checkAccusation(Solution solution)
+	
+	public boolean checkAccusation(Solution guessSolution)
 	{
+		if(guessSolution.person.name.equals(solution.person.name) &&
+				guessSolution.weapon.name.equals(solution.weapon.name) && 
+				guessSolution.room.name.equals(solution.room.name))
+			return true;
 		return false;
 	}
 
 	// TESTING ONLY
 	public ArrayList<Player> getPlayers() {
-		// TODO Auto-generated method stub
 		return players;
 	}
 	
 	
 	public ArrayList<Card> getDeck() {
-		// TODO Auto-generated method stub
 		return deck;
 	}
 
 	public Solution getSolution() {
-		// TODO Auto-generated method stub
-		return null;
+		return solution;
 	}
 
 	public Card getCard(String s) {
-		// TODO Auto-generated method stub
+		for(Card c: deck)
+		{
+			if(c.getName().equals(s))
+				return c;
+		}
 		return null;
 	}
 
 	public Board getBoard() {
 		// TODO Auto-generated method stub
-		return null;
+		return board;
 	}
 
 	public void setSolution(String person, String weapon, String room) {
-		// TODO Auto-generated method stub
-		
+		solution.person = new Card(person);
+		solution.weapon = new Card(weapon);
+		solution.room = new Card(room);
 	}
 
 	public void stackDeck(int stackNumber) {

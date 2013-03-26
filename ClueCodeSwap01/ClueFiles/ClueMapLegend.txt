@@ -1,0 +1,10 @@
+B,Ball Room
+C,Conservatory
+K,Kitchen
+R,Billiard Room
+L,Library
+S,Study
+D,Dining Room
+O,Lounge
+H,Hall
+X,Closet
